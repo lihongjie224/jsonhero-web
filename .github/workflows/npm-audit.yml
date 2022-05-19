@@ -10,17 +10,8 @@ on:
    - cron: '0 10 * * *'
 
 jobs:
-  scan:
-    name: npm audit
+  npm-audit-fix:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - name: install dependencies
-        run: npm ci
-      - uses: oke-py/npm-audit-action@v2
-        with:
-          audit_level: moderate
-          github_token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
-          issue_assignees: oke-py
-          issue_labels: vulnerability,test
-          dedupe_issues: true
+      - uses: actions/checkout@v3
+      - uses: ybiquitous/npm-audit-fix-action@v4
