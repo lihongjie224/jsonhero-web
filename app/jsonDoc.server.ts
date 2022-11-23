@@ -1,5 +1,7 @@
 import { customRandom } from "nanoid";
 import safeFetch from "./utilities/safeFetch";
+import createFromRawXml from "./utilities/xml/createFromRawXml";
+import isXML from "./utilities/xml/isXML";
 
 type BaseJsonDocument = {
   id: string;
@@ -36,6 +38,12 @@ export async function createFromUrlOrRawJson(
 
   if (isJSON(urlOrJson)) {
     return createFromRawJson("Untitled", urlOrJson);
+  }
+
+  // Wrapper for createFromRawJson to handle XML
+  // TODO ? change from urlOrJson to urlOrJsonOrXml 
+  if (isXML(urlOrJson)) {
+    return createFromRawXml("Untitled", urlOrJson);
   }
 }
 
@@ -86,6 +94,7 @@ export async function createFromRawJson(
     readOnly: options?.readOnly ?? false,
   };
 
+  JSON.parse(contents);
   await DOCUMENTS.put(docId, JSON.stringify(doc), {
     expirationTtl: options?.ttl ?? undefined,
     metadata: options?.metadata ?? undefined,
@@ -145,7 +154,7 @@ function isJSON(possibleJson: string): boolean {
   try {
     JSON.parse(possibleJson);
     return true;
-  } catch {
-    return false;
+  } catch (e: any) {
+    throw new Error(e.message);
   }
 }
