@@ -6,6 +6,7 @@ import {
   ViewUpdate,
 } from "@uiw/react-codemirror";
 import { useRef, useEffect } from "react";
+import { useJsonDoc } from "~/hooks/useJsonDoc";
 import { getEditorSetup } from "~/utilities/codeMirrorSetup";
 import { darkTheme, lightTheme } from "~/utilities/codeMirrorTheme";
 import { useTheme } from "./ThemeProvider";
@@ -78,11 +79,14 @@ export function CodeEditor(opts: CodeEditorProps) {
     if (view) {
       setSelectionRef.current = true;
 
-      const lineNumber = state?.doc.lineAt(selection?.start ?? 0).number;
+      const selectionStart = selection?.start ?? defaultProps.selection.start;
+      const selectionEnd = selection?.end ?? defaultProps.selection.end;
+
+      const lineNumber = state?.doc.lineAt(selectionStart).number;
 
       const transactionSpec: TransactionSpec = {
-        selection: { anchor: selection.start, head: selection.end },
-        effects: EditorView.scrollIntoView(selection.start, {
+        selection: { anchor: selectionStart, head: selectionEnd },
+        effects: EditorView.scrollIntoView(selectionStart, {
           y: "start",
           yMargin: 100,
         }),
@@ -92,10 +96,14 @@ export function CodeEditor(opts: CodeEditorProps) {
     }
   }, [selection, view, setSelectionRef.current]);
 
+  const { minimal } = useJsonDoc();
+
   return (
     <div>
       <div
-        className="h-jsonViewerHeight overflow-y-auto no-scrollbar"
+        className={`${
+          minimal ? "h-jsonViewerHeightMinimal" : "h-jsonViewerHeight"
+        } overflow-y-auto no-scrollbar`}
         ref={editor}
       />
     </div>

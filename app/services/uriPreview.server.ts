@@ -4,6 +4,7 @@ import {
   PreviewResult,
 } from "~/components/Preview/Types/preview.types";
 import safeFetch from "~/utilities/safeFetch";
+import { fetchProxy } from "./apihero.server";
 
 const imageContentTypes = [
   "image/jpeg",
@@ -18,7 +19,7 @@ async function getPeekalink(link: string): Promise<PreviewResult> {
     return { error: "Preview unavailable" };
   }
 
-  const response = await fetch("https://api.peekalink.io/", {
+  const response = await fetchProxy("https://api.peekalink.io/", {
     method: "POST",
     headers: {
       "X-API-Key": PEEKALINK_API_KEY,
@@ -37,7 +38,9 @@ async function getPeekalink(link: string): Promise<PreviewResult> {
 }
 
 export async function getUriPreview(uri: string): Promise<PreviewResult> {
-  const head = await headUri(uri);
+  const url = rewriteUrl(uri);
+
+  const head = await headUri(url.href);
 
   // If the url is an image content type, return a preview image
   if (
@@ -46,14 +49,14 @@ export async function getUriPreview(uri: string): Promise<PreviewResult> {
       contentType.includes(head.contentType)
     )
   ) {
-    const previewImage = createPreviewImage(uri, head);
+    const previewImage = createPreviewImage(url.href, head);
 
     return previewImage;
   }
 
   // If the url is a json content type, attempt to request the json and return a preview json
   if (head?.contentType.includes("application/json")) {
-    const response = await safeFetch(uri, {
+    const response = await safeFetch(url.href, {
       headers: {
         accept: "application/json",
       },
@@ -65,10 +68,10 @@ export async function getUriPreview(uri: string): Promise<PreviewResult> {
 
     const jsonBody = await response.json();
 
-    return createPreviewJson(uri, jsonBody);
+    return createPreviewJson(url.href, jsonBody);
   }
 
-  const peekalinkResult = await getPeekalink(uri);
+  const peekalinkResult = await getPeekalink(url.href);
 
   return peekalinkResult;
 }
@@ -95,9 +98,6 @@ async function headUri(
   if (!response.ok) {
     // If this is a 405 Method Not Allowed, do a GET request instead and if that is a redirect, return the head of the redirect url
     if (response.status === 405 && redirectCount < 5) {
-      console.log(
-        `${uri} is a 405 Method Not Allowed, trying to do a GET instead`
-      );
       // Do a GET request that does not follow redirects
       const noFollowResponse = await fetch(uri, {
         method: "GET",
@@ -118,10 +118,6 @@ async function headUri(
         }
       }
     }
-
-    console.log(
-      `Could not perform head request for ${uri}: ${response.status} [${response.statusText}]`
-    );
 
     return;
   }
@@ -148,4 +144,39 @@ function createPreviewImage(uri: string, head: HeadInfo): PreviewImage {
     mimeType: head.contentType,
     size: head.contentLength,
   };
+}
+
+// Rewrites the URL to convert an ipfs: url to use https://ipfs.io/ipfs/
+// Rewrites the URL to convert an git: url to use https://
+function rewriteUrl(url: string): URL {
+  const unmodifiedUrl = new URL(url);
+
+  // Rewrite the URL if it is a relative URL
+  if (unmodifiedUrl.protocol === "ipfs:") {
+    if (unmodifiedUrl.hostname === "") {
+      return new URL(
+        `https://ipfs.io/ipfs/${unmodifiedUrl.pathname.substring(2)}`
+      );
+    } else {
+      // Parse out the "hostname" from the raw url because hostnames are case-insensitive and automatically lowercased
+      const urlMatches = url.match(/^ipfs:\/\/([A-Za-z0-9]+)(\/.*)?/i);
+      const hostname = urlMatches?.[1];
+
+      return new URL(
+        `https://ipfs.io/ipfs/${hostname ?? unmodifiedUrl.hostname}${
+          unmodifiedUrl.pathname.length > 0 ? `/${unmodifiedUrl.pathname}` : ""
+        }${unmodifiedUrl.search}`
+      );
+    }
+  }
+  if (unmodifiedUrl.protocol === "git:") {
+    return new URL(
+      `https://${unmodifiedUrl.hostname}${unmodifiedUrl.pathname.replace(
+        ".git",
+        ""
+      )}`
+    );
+  }
+
+  return unmodifiedUrl;
 }
