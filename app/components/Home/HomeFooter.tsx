@@ -13,7 +13,7 @@ export function HomeFooter({ maxWidth = "1150px" }: HomeFooterProps) {
   return (
     <footer className="flex flex-col items-center w-full px-4 py-6 bg-black md:py-10">
       <div
-        className="flex items-center justify-between w-full pt-9 border-t-[1px] border-slate-800"
+        className="flex items-center justify-between w-full border-t-[1px] pt-9 border-slate-800"
         style={{ maxWidth: maxWidth }}
       >
         <div className="flex flex-grow items-start">
@@ -25,7 +25,7 @@ export function HomeFooter({ maxWidth = "1150px" }: HomeFooterProps) {
           </li>
           <li className="hover:cursor-pointer">
             <a
-              href="https://github.com/apihero-run/jsonhero-web"
+              href="https://github.com/triggerdotdev/jsonhero-web"
               target="_blank"
             >
               <GithubIcon />
@@ -42,7 +42,7 @@ export function HomeFooter({ maxWidth = "1150px" }: HomeFooterProps) {
             </a>
           </li>
           <li className="ml-2 hover:cursor-pointer">
-            <a href="https://twitter.com/runapihero" target="_blank">
+            <a href="https://twitter.com/triggerdotdev" target="_blank">
               <TwitterIcon />
             </a>
           </li>

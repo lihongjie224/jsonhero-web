@@ -13,7 +13,7 @@ import {
 } from "../services/toast.server";
 import { json, useLoaderData } from "remix";
 import ToastPopover from "../components/UI/ToastPopover";
-import { HomeApiHeroBanner } from "~/components/Home/HomeApiHeroBanner";
+import { HomeTriggerDevBanner } from "~/components/Home/HomeTriggerDevBanner";
 
 type LoaderData = { toastMessage?: ToastMessage };
 
@@ -45,7 +45,7 @@ export default function Index() {
 
       <HomeHeader fixed={true} />
       <HomeHeroSection />
-      <HomeApiHeroBanner />
+      <HomeTriggerDevBanner />
       <HomeInfoBoxSection />
       <HomeEdgeCasesSection />
       <HomeSearchSection />

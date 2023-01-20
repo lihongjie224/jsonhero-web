@@ -1,13 +1,15 @@
 import {
+  ActionFunction,
   LoaderFunction,
   MetaFunction,
   Outlet,
+  redirect,
   useLoaderData,
   useLocation,
   useParams,
 } from "remix";
 import invariant from "tiny-invariant";
-import { getDocument, JSONDocument } from "~/jsonDoc.server";
+import { deleteDocument, getDocument, JSONDocument } from "~/jsonDoc.server";
 import { JsonDocProvider } from "~/hooks/useJsonDoc";
 import { useEffect } from "react";
 import { JsonProvider } from "~/hooks/useJson";
@@ -28,7 +30,12 @@ import { Body } from "~/components/Primitives/Body";
 import { PageNotFoundTitle } from "~/components/Primitives/PageNotFoundTitle";
 import { SmallSubtitle } from "~/components/Primitives/SmallSubtitle";
 import { Logo } from "~/components/Icons/Logo";
-import ToastPopover from "~/components/UI/ToastPopover";
+import {
+  commitSession,
+  getSession,
+  setErrorMessage,
+  setSuccessMessage,
+} from "~/services/toast.server";
 
 export const loader: LoaderFunction = async ({ params, request }) => {
   invariant(params.id, "expected params.id");
@@ -77,6 +84,39 @@ export const loader: LoaderFunction = async ({ params, request }) => {
       minimal,
     };
   }
+};
+
+export const action: ActionFunction = async ({ request, params }) => {
+  // Return if the request is not a DELETE
+  if (request.method !== "DELETE") {
+    return;
+  }
+
+  invariant(params.id, "expected params.id");
+
+  const toastCookie = await getSession(request.headers.get("cookie"));
+
+  const document = await getDocument(params.id);
+
+  if (!document) {
+    setErrorMessage(toastCookie, "Document not found", "Error");
+
+    return redirect(`/`);
+  }
+
+  if (document.readOnly) {
+    setErrorMessage(toastCookie, "Document is read-only", "Error");
+
+    return redirect(`/j/${params.id}`);
+  }
+
+  await deleteDocument(params.id);
+
+  setSuccessMessage(toastCookie, "Document deleted successfully", "Success");
+
+  return redirect("/", {
+    headers: { "Set-Cookie": await commitSession(toastCookie) },
+  });
 };
 
 function getPathFromRequest(request: Request): string | null {

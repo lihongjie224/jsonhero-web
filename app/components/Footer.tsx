@@ -44,9 +44,7 @@ export function Footer() {
           </Body>
         </li>
       </ol>
-
-      <ApiHeroFooterBanner />
-
+      <WorkflowFooterBanner />
       <ol className="flex gap-2 items-center h-full invisible md:visible">
         {minimal && (
           <li>
@@ -64,21 +62,18 @@ export function Footer() {
   );
 }
 
-function ApiHeroFooterBanner() {
+function WorkflowFooterBanner() {
   return (
     <a
-      href="https://apihero.run"
+      href="https://trigger.dev"
       target="_blank"
-      className="hover:underline flex group hover:cursor-pointer text-slate-900 dark:text-white transition items-center dark:hover:text-transparent dark:hover:bg-clip-text dark:hover:bg-gradient-to-r dark:hover:from-purple-400 dark:hover:to-pink-600"
+      className="hover:underline flex group hover:cursor-pointer text-slate-900 dark:text-white transition items-center"
     >
-      <p className="md:text-lg text-sm whitespace-nowrap">
-        Try{" "}
-        <span className=" font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-purple-500 to-pink-500">
-          API Hero
-        </span>{" "}
-        – make every API you use faster and more reliable!
-      </p>
-      <ArrowRightIcon className="ml-1 h-4 w-4 text-base text-slate-900 dark:text-white dark:group-hover:text-purple-400 transition" />
+      Automate complex workflows with code.
+      <span className="pl-0.5 font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-purple-500 to-pink-500">
+        Check it out
+      </span>
+      <ArrowRightIcon className="ml-1 h-4 w-4 text-base text-slate-900 dark:text-white transition" />
     </a>
   );
 }

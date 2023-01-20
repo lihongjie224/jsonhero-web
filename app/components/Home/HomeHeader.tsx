@@ -16,9 +16,9 @@ export function HomeHeader({ fixed }: { fixed?: boolean }) {
     <header
       className={`${
         fixed ? "fixed" : ""
-      } z-20 flex items-center justify-between w-screen h-[82px] px-4 bg-indigo-700`}
+      } z-20 flex items-center justify-between w-screen h-[52px] sm:h-[82px] px-4 bg-indigo-700`}
     >
-      <div className="flex w-36 sm:w-44 mr-3">
+      <div className="flex w-28 sm:w-44 mr-3">
         <Logo />
       </div>
       <ol className="flex items-center gap-2">
@@ -51,7 +51,7 @@ export function HomeHeader({ fixed }: { fixed?: boolean }) {
           </a>
         </li>
         <li className="hover:cursor-pointer opacity-90 hover:opacity-100 transition">
-          <a href="https://twitter.com/runapihero" target="_blank">
+          <a href="https://twitter.com/triggerdotdev" target="_blank">
             <TwitterIcon />
           </a>
         </li>
