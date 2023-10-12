@@ -10,6 +10,7 @@ import { IndentPreference } from "~/components/IndentPreference";
 import { ArrowRightIcon } from "@heroicons/react/outline";
 import TriggerDevLogoImageDark from "~/assets/images/trigger-dev-logo-dark.png";
 import TriggerDevLogoImage from "~/assets/images/trigger-dev-logo.png";
+import TriggerDevLogoTriangleImage from "~/assets/images/td-triangle.png";
 
 export function Footer() {
   const { minimal } = useJsonDoc();
@@ -69,21 +70,22 @@ function WorkflowFooterBanner() {
     <a
       href="https://trigger.dev"
       target="_blank"
-      className="group  text-md  lg:text-md whitespace-nowrap flex group hover:cursor-pointer transition items-center"
+      className="group md:text-base lg:text-lg whitespace-nowrap flex group hover:cursor-pointer transition items-center justify-center px-2 h-full rounded-full"
     >
-      <div className="dark:hidden">
-        <TriggerDevLogoDark className="flex w-24 mr-2 mt-0.5 pr-1" />
+      <div className="dark:hidden pt-0.5">
+        <TriggerDevLogoDark className="lg:flex hidden w-24 mr-2 mt-0.5" />
       </div>
       <div className="dark:block hidden">
-        <TriggerDevLogo className="flex w-24 mr-2 mt-0.5" />
+        <TriggerDevLogo className="lg:flex hidden w-24 mr-2 mt-0.5" />
       </div>
-      <span className="lg:block hidden  text-slate-700 group-hover:text-slate-900 dark:text-slate-200 dark:group-hover:text-slate-100 transition">
-        Create reliable workflows in code:
+      <TriggerDevLogoTriangle className="lg:hidden w-4 h-4 flex mr-2 mt-0.5 " />
+
+      <span className="items-center lg:flex sm:flex hidden underline underline-offset-2 text-slate-700 group-hover:text-slate-900 dark:text-slate-300 dark:group-hover:text-slate-100 transition">
+        <span className="lg:block hidden">the&nbsp;</span>background jobs
+        <span className="lg:block hidden">&nbsp;framework&nbsp;</span> for
+        Typescript
+        <ArrowRightIcon className="ml-1 h-3 w-3  text-base text-green-900 dark:text-green-500 whitespace-nowrap group-hover:text-green-900 dark:group-hover:text-green-400 transition" />
       </span>
-      <span className="flex  items-center underline underline-offset-2 pl-1 font-extrabold text-purple-500 whitespace-nowrap transition group-hover:text-purple-600 dark:group-hover:text-purple-400">
-        Check it out
-      </span>
-      <ArrowRightIcon className="ml-1 h-3 w-3 text-base text-purple-500 whitespace-nowrap group-hover:text-purple-600 dark:group-hover:text-purple-400 transition" />
     </a>
   );
 }
@@ -94,4 +96,8 @@ function TriggerDevLogoDark({ className }: { className: string }) {
 
 function TriggerDevLogo({ className }: { className: string }) {
   return <img src={TriggerDevLogoImage} className={className} />;
+}
+
+function TriggerDevLogoTriangle({ className }: { className: string }) {
+  return <img src={TriggerDevLogoTriangleImage} className={className} />;
 }
