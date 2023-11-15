@@ -7,6 +7,7 @@ COPY . .
 
 RUN echo "SESSION_SECRET=abc123" >> .env
 
+RUN npm config set registry https://registry.npmmirror.com
 RUN npm install
 RUN npm run build
 
